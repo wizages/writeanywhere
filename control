@@ -1,0 +1,9 @@
+Package: com.wizages.writeanywhere
+Name: WriteAnywhere
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome MobileSubstrate tweak!
+Maintainer: wizages
+Author: wizages
+Section: Tweaks
