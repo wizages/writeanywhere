@@ -26,14 +26,15 @@
 		[messagingCenter runServerOnCurrentThread];
 
 		// Register Messages
-		[messagingCenter registerForMessageName:@"writeFileTo" target:self selector:@selector(handleMessageNamed:withUserInfo:)];
-		[messagingCenter registerForMessageName:@"createDir" target:self selector:@selector(handleSimpleMessageNamed:withUserInfo:)];
+		[messagingCenter registerForMessageName:@"writeStringTo" target:self selector:@selector(handleString:withUserInfo:)];
+		[messagingCenter registerForMessageName:@"createDir" target:self selector:@selector(handleDir:withUserInfo:)];
+		[messagingCenter registerForMessageName:@"writeDataTo" target:self selector:@selector(handleData:withUserInfo:)];
 	}
 
 	return self;
 }
 
-- (NSDictionary *)handleMessageNamed:(NSString *)name withUserInfo:(NSDictionary *)userinfo {
+- (NSDictionary *)handleString:(NSString *)name withUserInfo:(NSDictionary *)userinfo {
 	// Process userinfo (simple dictionary) and return a dictionary (or nil)
 	NSError *error3 = nil;
 	[userinfo[@"data"] writeToFile:userinfo[@"filelocation"] atomically:NO encoding:NSUTF8StringEncoding error:&error3];
@@ -41,16 +42,22 @@
 	return nil;
 }
 
-- (void)handleSimpleMessageNamed:(NSString *)name withUserInfo:(NSDictionary *)userinfo{
+- (void)handleDir:(NSString *)name withUserInfo:(NSDictionary *)userinfo{
 	NSFileManager *fm = [NSFileManager defaultManager];
 	NSError *error2 = nil;
 	[fm createDirectoryAtPath:userinfo[@"dirlocation"] withIntermediateDirectories:YES attributes:nil error:&error2];
 	HBLogDebug(@"Error2: %@", error2)
 	// ...
 }
+
+
+-(void)handleData:(NSString *)name withUserInfo:(NSDictionary *)userinfo{
+	HBLogDebug(@"userinfo: %@", userinfo);
+	[userinfo[@"data"] writeToFile:userinfo[@"filelocation"] atomically:NO];
+}
 @end
 
 %ctor{
+	HBLogDebug(@"Loaded");
 	[WriteAnywhereServer load];
-
 }
